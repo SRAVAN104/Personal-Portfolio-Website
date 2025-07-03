@@ -1,3 +1,55 @@
+# trigger:
+# - main
+
+# pool:
+#   name: 'Default'
+
+# variables:
+#   buildConfiguration: 'Release'
+#   solution: 'Personal Portfolio Website.sln'
+#   projectPath: 'Personal-Portfolio-Website/Personal Portfolio Website.csproj'
+#   outputPath: '$(Build.ArtifactStagingDirectory)\AppOutput'
+#   copyToPath: 'C:\agent\portfolio'
+
+# stages:
+# - stage: Build
+#   jobs:
+#   - job: BuildDesktopApp
+#     displayName: 'Build .NET Desktop App'
+#     steps:
+
+#     - task: NuGetToolInstaller@1
+#       displayName: 'Install NuGet'
+
+#     - task: NuGetCommand@2
+#       displayName: 'Restore NuGet Packages'
+#       inputs:
+#         restoreSolution: '$(solution)'
+
+
+#     - task: DotNetCoreCLI@2
+#       displayName: 'Publish .NET Project'
+#       inputs:
+#         command: 'publish'
+#         publishWebProjects: false
+#         projects: '$(projectPath)'
+#         arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+#         zipAfterPublish: false
+
+#     - task: CopyFiles@2
+#       displayName: 'Copy to Final Target Directory'
+#       inputs:
+#         SourceFolder: '$(outputPath)'
+#         Contents: '**'
+#         TargetFolder: '$(copyToPath)'
+
+#     - task: PublishBuildArtifacts@1
+#       displayName: 'Publish Build Artifacts'
+#       inputs:
+#         PathtoPublish: '$(outputPath)'
+#         ArtifactName: 'drop'
+
+
 trigger:
 - main
 
@@ -8,7 +60,7 @@ variables:
   buildConfiguration: 'Release'
   solution: 'Personal Portfolio Website.sln'
   projectPath: 'Personal-Portfolio-Website/Personal Portfolio Website.csproj'
-  outputPath: '$(Build.ArtifactStagingDirectory)\AppOutput'
+  outputPath: '$(Build.ArtifactStagingDirectory)/AppOutput'
   copyToPath: 'C:\agent\portfolio'
 
 stages:
@@ -26,13 +78,15 @@ stages:
       inputs:
         restoreSolution: '$(solution)'
 
+    - script: dir $(Build.SourcesDirectory) /s /b
+      displayName: 'List all files (debug)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish .NET Project'
       inputs:
         command: 'publish'
         publishWebProjects: false
-        projects: '$(projectPath)'
+        projects: '**/*.csproj'  # <-- Use this to debug project path
         arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
         zipAfterPublish: false
 
@@ -48,3 +102,4 @@ stages:
       inputs:
         PathtoPublish: '$(outputPath)'
         ArtifactName: 'drop'
+
