@@ -43,7 +43,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy Build Output to Staging Directory'
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)\Personal-Portfolio-Website\bin\$(buildConfiguration)'
+        SourceFolder: '$(Build.SourcesDirectory)\bin\$(buildConfiguration)'
         Contents: '**\*'
         TargetFolder: '$(outputPath)'
 
