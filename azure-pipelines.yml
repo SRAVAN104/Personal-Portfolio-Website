@@ -1,55 +1,3 @@
-# trigger:
-# - main
-
-# pool:
-#   name: 'Default'
-
-# variables:
-#   buildConfiguration: 'Release'
-#   solution: 'Personal Portfolio Website.sln'
-#   projectPath: 'Personal-Portfolio-Website/Personal Portfolio Website.csproj'
-#   outputPath: '$(Build.ArtifactStagingDirectory)\AppOutput'
-#   copyToPath: 'C:\agent\portfolio'
-
-# stages:
-# - stage: Build
-#   jobs:
-#   - job: BuildDesktopApp
-#     displayName: 'Build .NET Desktop App'
-#     steps:
-
-#     - task: NuGetToolInstaller@1
-#       displayName: 'Install NuGet'
-
-#     - task: NuGetCommand@2
-#       displayName: 'Restore NuGet Packages'
-#       inputs:
-#         restoreSolution: '$(solution)'
-
-
-#     - task: DotNetCoreCLI@2
-#       displayName: 'Publish .NET Project'
-#       inputs:
-#         command: 'publish'
-#         publishWebProjects: false
-#         projects: '$(projectPath)'
-#         arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
-#         zipAfterPublish: false
-
-#     - task: CopyFiles@2
-#       displayName: 'Copy to Final Target Directory'
-#       inputs:
-#         SourceFolder: '$(outputPath)'
-#         Contents: '**'
-#         TargetFolder: '$(copyToPath)'
-
-#     - task: PublishBuildArtifacts@1
-#       displayName: 'Publish Build Artifacts'
-#       inputs:
-#         PathtoPublish: '$(outputPath)'
-#         ArtifactName: 'drop'
-
-
 trigger:
 - main
 
@@ -78,28 +26,38 @@ stages:
       inputs:
         restoreSolution: '$(solution)'
 
-    - script: dir $(Build.SourcesDirectory) /s /b
-      displayName: 'List all files (debug)'
-
-    - task: DotNetCoreCLI@2
-      displayName: 'Publish .NET Project'
+    - task: VSBuild@1
+      displayName: 'Build Solution'
       inputs:
-        command: 'publish'
-        publishWebProjects: false
-        projects: '**/*.csproj'  # <-- Use this to debug project path
-        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
-        zipAfterPublish: false
+        solution: '$(solution)'
+        msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+        platform: 'Any CPU'
+        configuration: '$(buildConfiguration)'
+
+    - task: CopyFiles@2
+      displayName: 'Copy Build Output to Staging Directory'
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)\bin\$(buildConfiguration)'
+        Contents: '**\*'
+        TargetFolder: '$(outputPath)'
 
     - task: CopyFiles@2
       displayName: 'Copy to Final Target Directory'
       inputs:
         SourceFolder: '$(outputPath)'
-        Contents: '**'
+        Contents: '**\*'
         TargetFolder: '$(copyToPath)'
+
+    # - task: CopyFiles@2
+    #   displayName: 'Copy to IIS Web Server'
+    #   inputs:
+    #     SourceFolder: '$(outputPath)'
+    #     Contents: '**\*'
+    #     TargetFolder: 'C:\inetpub\wwwroot\GoMartDesktopApp'
+
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Build Artifacts'
       inputs:
         PathtoPublish: '$(outputPath)'
         ArtifactName: 'drop'
-
