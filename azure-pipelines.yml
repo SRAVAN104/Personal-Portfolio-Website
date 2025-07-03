@@ -4,10 +4,8 @@ trigger:
 pool:
   name: 'Default'
 
-
 variables:
   buildConfiguration: 'Release'
-  # solution: '**/*.sln'
   solution: 'Personal Portfolio Website.sln'
   projectPath: 'Personal-Portfolio-Website\Personal Portfolio Website.csproj'
   outputPath: '$(Build.ArtifactStagingDirectory)\AppOutput'
@@ -20,43 +18,33 @@ stages:
     displayName: 'Build .NET Portfolio Website'
     steps:
 
-    - task: NuGetToolInstaller@1
-      displayName: 'Install NuGet'
+    - task: UseDotNet@2
+      displayName: 'Install .NET SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '4.x.x'
 
-    - task: NuGetCommand@2
+    - task: DotNetCoreCLI@2
       displayName: 'Restore NuGet Packages'
       inputs:
-        restoreSolution: '$(solution)'
+        command: 'restore'
+        projects: '$(projectPath)'
 
-    - task: VSBuild@1
-      displayName: 'Build Solution'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish .NET Project'
       inputs:
-        solution: '$(solution)'
-        msbuildArgs: '/p:Configuration=$(buildConfiguration)'
-        platform: 'Any CPU'
-        configuration: '$(buildConfiguration)'
-
-    - task: CopyFiles@2
-      displayName: 'Copy Build Output to Staging Directory'
-      inputs:
-        SourceFolder: '$(Build.SourcesDirectory)\Personal-Portfolio-Website\bin\$(buildConfiguration)'
-        Contents: '**\*'
-        TargetFolder: '$(outputPath)'
+        command: 'publish'
+        publishWebProjects: false
+        projects: '$(projectPath)'
+        arguments: '--configuration $(buildConfiguration) --output $(outputPath)'
+        zipAfterPublish: false
 
     - task: CopyFiles@2
       displayName: 'Copy to Final Target Directory'
       inputs:
         SourceFolder: '$(outputPath)'
-        Contents: '**\*'
+        Contents: '**'
         TargetFolder: '$(copyToPath)'
-
-    # - task: CopyFiles@2
-    #   displayName: 'Copy to IIS Web Server'
-    #   inputs:
-    #     SourceFolder: '$(outputPath)'
-    #     Contents: '**\*'
-    #     TargetFolder: 'C:\inetpub\wwwroot\GoMartDesktopApp'
-
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Build Artifacts'
