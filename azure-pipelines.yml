@@ -15,20 +15,16 @@ stages:
 - stage: Build
   jobs:
   - job: BuildDesktopApp
-    displayName: 'Build .NET Portfolio Website'
+    displayName: 'Build .NET Desktop App'
     steps:
 
-    - task: UseDotNet@2
-      displayName: 'Install .NET SDK'
-      inputs:
-        packageType: 'sdk'
-        version: '2.0'
+    - task: NuGetToolInstaller@1
+      displayName: 'Install NuGet'
 
-    - task: DotNetCoreCLI@2
+    - task: NuGetCommand@2
       displayName: 'Restore NuGet Packages'
       inputs:
-        command: 'restore'
-        projects: '$(projectPath)'
+        restoreSolution: '$(solution)'
 
 
     - task: DotNetCoreCLI@2
