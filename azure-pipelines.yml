@@ -34,10 +34,16 @@ stages:
         platform: 'Any CPU'
         configuration: '$(buildConfiguration)'
 
+  - script: |
+      echo "Build Output Directory Structure:"
+      dir "$(Build.SourcesDirectory)" /s /b
+    displayName: '🛠️ Debug: Show All Files After Build'
+
+
     - task: CopyFiles@2
       displayName: 'Copy Build Output to Staging Directory'
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)\Personal-Portfolio-Website\bin\$(buildConfiguration)'
+        SourceFolder: '$(Build.SourcesDirectory)\s\bin\$(buildConfiguration)'
         Contents: '**\*'
         TargetFolder: '$(outputPath)'
 
