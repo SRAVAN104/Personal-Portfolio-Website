@@ -7,7 +7,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   solution: 'Personal Portfolio Website.sln'
-  projectPath: 'Personal-Portfolio-Website/Personal Portfolio Website.csproj'
+  # projectPath: 'Personal-Portfolio-Website/Personal Portfolio Website.csproj'
   outputPath: '$(Build.ArtifactStagingDirectory)/AppOutput'
   copyToPath: 'C:\agent\portfolio'
 
