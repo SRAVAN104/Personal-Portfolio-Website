@@ -7,7 +7,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   solution: 'Personal Portfolio Website.sln'
-  projectPath: 'Personal-Portfolio-Website\Personal Portfolio Website.csproj'
+  projectPath: 'Personal-Portfolio-Website/Personal Portfolio Website.csproj'
   outputPath: '$(Build.ArtifactStagingDirectory)\AppOutput'
   copyToPath: 'C:\agent\portfolio'
 
@@ -22,13 +22,14 @@ stages:
       displayName: 'Install .NET SDK'
       inputs:
         packageType: 'sdk'
-        version: '2.0.x'
+        version: '6.0'
 
     - task: DotNetCoreCLI@2
       displayName: 'Restore NuGet Packages'
       inputs:
         command: 'restore'
         projects: '$(projectPath)'
+
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish .NET Project'
