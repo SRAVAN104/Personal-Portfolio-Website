@@ -34,10 +34,10 @@ stages:
         platform: 'Any CPU'
         configuration: '$(buildConfiguration)'
 
-  - script: |
-      echo "Build Output Directory Structure:"
-      dir "$(Build.SourcesDirectory)" /s /b
-    displayName: '🛠️ Debug: Show All Files After Build'
+    - script: |
+        echo "Build Output Directory Structure:"
+        dir "$(Build.SourcesDirectory)" /s /b
+      displayName: '🛠️ Debug: Show All Files After Build'
 
 
     - task: CopyFiles@2
