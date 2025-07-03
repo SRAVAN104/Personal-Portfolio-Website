@@ -22,7 +22,7 @@ stages:
       displayName: 'Install .NET SDK'
       inputs:
         packageType: 'sdk'
-        version: '6.0'
+        version: '2.0'
 
     - task: DotNetCoreCLI@2
       displayName: 'Restore NuGet Packages'
